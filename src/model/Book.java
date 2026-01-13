@@ -60,4 +60,19 @@ public class Book {
     public void returnBook() {
         this.available = true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Book book = (Book) o;
+        return isbn.equals(book.isbn);
+    }
+
+    @Override
+    public int hashCode() {
+        return isbn.hashCode();
+    }
+
 }
