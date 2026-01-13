@@ -5,13 +5,18 @@ public class Main {
     public static void main(String[] args) {
         LibraryService library = new LibraryService();
 
-        Book b1 = new Book("123", "Clean Code", "Robert Martin");
-        Book b2 = new Book("123", "Clean Code", "Robert Martin");
+        library.addBook(new Book("111", "Effective Java", "Joshua Bloch"));
+        library.addBook(new Book("222", "Clean Code", "Robert Martin"));
+        library.addBook(new Book("333", "Design Patterns", "Erich Gamma"));
 
-        System.out.println(library.addBook(b1)); // true
-        System.out.println(library.addBook(b2)); // false
+        library.findBookByIsbn("222").borrow();
 
-        Book found = library.findBookByIsbn("123");
-        System.out.println(found.getTitle()); // Clean Code
+        System.out.println("Books sorted by title:");
+        library.getBooksSortedByTitle()
+                .forEach(book -> System.out.println(book.getTitle()));
+
+        System.out.println("\nAvailable books:");
+        library.getAvailableBooks()
+                .forEach(book -> System.out.println(book.getTitle()));
     }
 }
