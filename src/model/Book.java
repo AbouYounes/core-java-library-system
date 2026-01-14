@@ -1,4 +1,8 @@
 package model;
+import java.time.LocalDateTime;
+import java.time.Duration;
+
+
 
 /**
  * Represents a book in the library.
@@ -10,6 +14,9 @@ public class Book {
     private final String title;
     private final String author;
     private boolean available;
+    private final LocalDateTime createdAt;
+    private LocalDateTime borrowedAt;
+
 
     public Book(String isbn, String title, String author) {
         if (isbn == null || isbn.isBlank()) {
@@ -26,6 +33,8 @@ public class Book {
         this.title = title;
         this.author = author;
         this.available = true;
+        this.createdAt = LocalDateTime.now();
+
     }
 
     public String getIsbn() {
@@ -44,22 +53,45 @@ public class Book {
         return available;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getBorrowedAt() {
+        return borrowedAt;
+    }
+
+
     /**
      * Marks the book as borrowed.
+     * Stamp a borrow datetime.
      */
     public void borrow() {
         if (!available) {
             throw new IllegalStateException("Book is already borrowed");
         }
         this.available = false;
+        this.borrowedAt = LocalDateTime.now();
     }
+
+    public long getBorrowedDurationInHours() {
+        if (borrowedAt == null) {
+            return 0;
+        }
+        return Duration.between(borrowedAt, LocalDateTime.now()).toHours();
+    }
+
+
 
     /**
      * Marks the book as returned.
+     * Stamp a returnBook datetime.
      */
     public void returnBook() {
         this.available = true;
+        this.borrowedAt = null;
     }
+
 
     @Override
     public boolean equals(Object o) {

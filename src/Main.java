@@ -1,24 +1,20 @@
-import exception.LibraryException;
 import model.Book;
 import service.LibraryService;
 import service.LibraryServiceImpl;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         LibraryService library = new LibraryServiceImpl();
 
-        try {
-            library.addBook(new Book("123", "Clean Code", "Robert Martin"));
-            library.addBook(new Book("123", "Clean Code", "Robert Martin")); // error
-        } catch (LibraryException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        Book book = new Book("999", "Effective Java", "Joshua Bloch");
+        library.addBook(book);
 
-        try {
-            library.borrowBook("123");
-            library.borrowBook("123"); // error
-        } catch (LibraryException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        library.borrowBook("999");
+
+        Thread.sleep(2000); // simulate time passing
+
+        System.out.println("Borrowed hours: " + book.getBorrowedDurationInHours());
+        System.out.println("Created at: " + book.getCreatedAt());
+        System.out.println("Borrowed at: " + book.getBorrowedAt());
     }
 }
