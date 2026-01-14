@@ -15,7 +15,7 @@ import exception.LibraryException;
 /**
  * Manages books in the library.
  */
-public class LibraryService {
+public class LibraryServiceImpl implements LibraryService {
 
     private final Map<String, Book> books = new HashMap<>();
 

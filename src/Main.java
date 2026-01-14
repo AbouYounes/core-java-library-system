@@ -1,10 +1,11 @@
 import exception.LibraryException;
 import model.Book;
 import service.LibraryService;
+import service.LibraryServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
-        LibraryService library = new LibraryService();
+        LibraryService library = new LibraryServiceImpl();
 
         try {
             library.addBook(new Book("123", "Clean Code", "Robert Martin"));
