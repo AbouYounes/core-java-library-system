@@ -1,3 +1,4 @@
+import exception.LibraryException;
 import model.Book;
 import service.LibraryService;
 
@@ -5,18 +6,18 @@ public class Main {
     public static void main(String[] args) {
         LibraryService library = new LibraryService();
 
-        library.addBook(new Book("111", "Effective Java", "Joshua Bloch"));
-        library.addBook(new Book("222", "Clean Code", "Robert Martin"));
-        library.addBook(new Book("333", "Design Patterns", "Erich Gamma"));
+        try {
+            library.addBook(new Book("123", "Clean Code", "Robert Martin"));
+            library.addBook(new Book("123", "Clean Code", "Robert Martin")); // error
+        } catch (LibraryException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
 
-        library.findBookByIsbn("222").borrow();
-
-        System.out.println("Books sorted by title:");
-        library.getBooksSortedByTitle()
-                .forEach(book -> System.out.println(book.getTitle()));
-
-        System.out.println("\nAvailable books:");
-        library.getAvailableBooks()
-                .forEach(book -> System.out.println(book.getTitle()));
+        try {
+            library.borrowBook("123");
+            library.borrowBook("123"); // error
+        } catch (LibraryException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 }
