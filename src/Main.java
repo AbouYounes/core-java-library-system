@@ -1,20 +1,20 @@
 import model.Book;
+import service.LibraryFileRepository;
 import service.LibraryService;
 import service.LibraryServiceImpl;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        LibraryService library = new LibraryServiceImpl();
+    public static void main(String[] args) {
+        LibraryServiceImpl library = new LibraryServiceImpl();
+        LibraryFileRepository repository = new LibraryFileRepository("library.txt");
 
-        Book book = new Book("999", "Effective Java", "Joshua Bloch");
-        library.addBook(book);
+        repository.load(library);
 
-        library.borrowBook("999");
+        library.addBook(new Book("103", "Clean Architecture", "Robert Martin"));
+        library.addBook(new Book("104", "Effective Java", "Joshua Bloch"));
 
-        Thread.sleep(2000); // simulate time passing
+        repository.save(library.getAllBooks().values());
 
-        System.out.println("Borrowed hours: " + book.getBorrowedDurationInHours());
-        System.out.println("Created at: " + book.getCreatedAt());
-        System.out.println("Borrowed at: " + book.getBorrowedAt());
+        System.out.println("Library saved successfully.");
     }
 }
