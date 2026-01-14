@@ -1,4 +1,5 @@
 package model;
+
 import java.time.LocalDateTime;
 import java.time.Duration;
 
@@ -13,11 +14,19 @@ public class Book {
     private final String isbn;
     private final String title;
     private final String author;
-    private boolean available;
     private final LocalDateTime createdAt;
+
+    private boolean available;
     private LocalDateTime borrowedAt;
 
 
+    /**
+     * Creates a new Book instance.
+     *
+     * @param isbn   unique book identifier
+     * @param title  book title
+     * @param author book author
+     */
     public Book(String isbn, String title, String author) {
         if (isbn == null || isbn.isBlank()) {
             throw new IllegalArgumentException("ISBN cannot be empty");
@@ -32,10 +41,12 @@ public class Book {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
-        this.available = true;
         this.createdAt = LocalDateTime.now();
+        this.available = true;
 
     }
+
+    // ===== Getters =====
 
     public String getIsbn() {
         return isbn;
@@ -64,7 +75,7 @@ public class Book {
 
     /**
      * Marks the book as borrowed.
-     * Stamp a borrow datetime.
+     * Throws an exception if the book is already borrowed.
      */
     public void borrow() {
         if (!available) {
@@ -73,14 +84,6 @@ public class Book {
         this.available = false;
         this.borrowedAt = LocalDateTime.now();
     }
-
-    public long getBorrowedDurationInHours() {
-        if (borrowedAt == null) {
-            return 0;
-        }
-        return Duration.between(borrowedAt, LocalDateTime.now()).toHours();
-    }
-
 
 
     /**
@@ -92,12 +95,25 @@ public class Book {
         this.borrowedAt = null;
     }
 
+    /**
+     * Calculates how long the book has been borrowed.
+     *
+     * @return borrowed duration in hours, or 0 if not borrowed
+     */
+    public long getBorrowedDurationInHours() {
+        if (borrowedAt == null) {
+            return 0;
+        }
+        return Duration.between(borrowedAt, LocalDateTime.now()).toHours();
+    }
 
+    /**
+     * Two books are equal if they have the same ISBN.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Book)) return false;
         Book book = (Book) o;
         return isbn.equals(book.isbn);
     }

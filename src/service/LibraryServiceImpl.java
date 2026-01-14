@@ -1,30 +1,27 @@
 package service;
 
+import exception.LibraryException;
 import model.Book;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import exception.LibraryException;
-
-
+import java.util.*;
 
 /**
- * Manages books in the library.
+ * In-memory implementation of LibraryService.
+ *
+ * Responsibilities:
+ * - Enforce business rules
+ * - Manage books in memory
+ *
+ * Does NOT:
+ * - Handle files
+ * - Handle UI
  */
 public class LibraryServiceImpl implements LibraryService {
 
+    /** Internal storage of books (key = ISBN) */
     private final Map<String, Book> books = new HashMap<>();
 
-    /**
-     * Adds a book to the library.
-     * Or show exception if the book already exist.
-     * @param book the book to add
-     *
-     */
+    @Override
     public void addBook(Book book) {
         if (books.containsKey(book.getIsbn())) {
             throw new LibraryException(
@@ -33,59 +30,12 @@ public class LibraryServiceImpl implements LibraryService {
         books.put(book.getIsbn(), book);
     }
 
-    /**
-     * Finds a book by ISBN.
-     *
-     * @param isbn the ISBN to search for
-     * @return the book, or null if not found
-     */
+    @Override
     public Book findBookByIsbn(String isbn) {
         return books.get(isbn);
     }
 
-    /**
-     * @return all books in the library
-     */
-    public Map<String, Book> getAllBooks() {
-        return books;
-    }
-
-    /**
-     * @return all books sorted by title
-     */
-    public List<Book> getBooksSortedByTitle() {
-        List<Book> result = new ArrayList<>(books.values());
-        result.sort(Comparator.comparing(Book::getTitle));
-        return result;
-    }
-
-    /**
-     * @return all books sorted by author
-     */
-    public List<Book> getBooksSortedByAuthor() {
-        List<Book> result = new ArrayList<>(books.values());
-        result.sort(Comparator.comparing(Book::getAuthor));
-        return result;
-    }
-
-    /**
-     * @return only available books
-     */
-    public List<Book> getAvailableBooks() {
-        List<Book> result = new ArrayList<>();
-        for (Book book : books.values()) {
-            if (book.isAvailable()) {
-                result.add(book);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Show exception if the book doest exist, or already borrowed.
-     * @param isbn the book to borrow
-     *
-     */
+    @Override
     public void borrowBook(String isbn) {
         Book book = books.get(isbn);
 
@@ -99,6 +49,39 @@ public class LibraryServiceImpl implements LibraryService {
 
         book.borrow();
     }
+
+    @Override
+    public Collection<Book> getAllBooks() {
+        return books.values();
+    }
+    @Override
+    public List<Book> getAvailableBooks() {
+        List<Book> result = new ArrayList<>();
+        for (Book book : books.values()) {
+            if (book.isAvailable()) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Book> getBooksSortedByTitle() {
+        List<Book> result = new ArrayList<>(books.values());
+        result.sort(Comparator.comparing(Book::getTitle));
+        return result;
+    }
+
+    @Override
+    public List<Book> getBooksSortedByAuthor() {
+        List<Book> result = new ArrayList<>(books.values());
+        result.sort(Comparator.comparing(Book::getAuthor));
+        return result;
+    }
+
+
+
+
 
 
 }

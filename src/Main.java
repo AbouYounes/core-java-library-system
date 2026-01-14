@@ -3,17 +3,37 @@ import service.LibraryFileRepository;
 import service.LibraryService;
 import service.LibraryServiceImpl;
 
+/**
+ * Application entry point.
+ *
+ * Responsibilities:
+ * - Create objects
+ * - Wire dependencies
+ * - Start the application
+ *
+ * Does NOT:
+ * - Contain business logic
+ * - Handle persistence logic
+ */
 public class Main {
+
     public static void main(String[] args) {
-        LibraryServiceImpl library = new LibraryServiceImpl();
+
+        // Wiring
+        LibraryService library = new LibraryServiceImpl();
         LibraryFileRepository repository = new LibraryFileRepository("library.txt");
 
-        repository.load(library);
+        // Load persisted data
+        for (Book book : repository.load()) {
+            library.addBook(book);
+        }
 
-        library.addBook(new Book("103", "Clean Architecture", "Robert Martin"));
-        library.addBook(new Book("104", "Effective Java", "Joshua Bloch"));
+        // Use the application
+        library.addBook(new Book("113", "Clean Architecture", "Robert Martin"));
+        library.addBook(new Book("114", "Effective Java", "Joshua Bloch"));
 
-        repository.save(library.getAllBooks().values());
+        // Save state
+        repository.save(library.getAllBooks());
 
         System.out.println("Library saved successfully.");
     }

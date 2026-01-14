@@ -3,9 +3,20 @@ package service;
 import model.Book;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Handles file-based persistence of books.
+ *
+ * Responsibilities:
+ * - Save books to file
+ * - Load books from file
+ *
+ * Does NOT:
+ * - Apply business rules
+ * - Know about services
+ */
 public class LibraryFileRepository {
 
     private final File file;
@@ -14,7 +25,12 @@ public class LibraryFileRepository {
         this.file = new File(filename);
     }
 
-    public void save(Collection<Book> books) {
+    /**
+     * Saves all books to the file.
+     *
+     * @param books books to save
+     */
+    public void save(Iterable<Book> books) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             for (Book book : books) {
                 writer.println(serialize(book));
@@ -24,42 +40,48 @@ public class LibraryFileRepository {
         }
     }
 
-    public void load(LibraryServiceImpl libraryService) {
+    /**
+     * Loads books from the file.
+     *
+     * @return list of loaded books
+     */
+    public List<Book> load() {
+        List<Book> books = new ArrayList<>();
+
         if (!file.exists()) {
-            return; // nothing to load
+            return books;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                Book book = deserialize(line);
-                libraryService.addBook(book);
+                books.add(deserialize(line));
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to load library data", e);
         }
+
+        return books;
     }
+
+    // ===== Serialization helpers =====
 
     private String serialize(Book book) {
         return String.join(",",
                 book.getIsbn(),
                 book.getTitle(),
                 book.getAuthor(),
-                String.valueOf(book.isAvailable()),
-                book.getCreatedAt().toString(),
-                book.getBorrowedAt() == null ? "null" : book.getBorrowedAt().toString()
+                String.valueOf(book.isAvailable())
         );
     }
 
     private Book deserialize(String line) {
-        String[] parts = line.split(",", -1);
-
+        String[] parts = line.split(",");
         Book book = new Book(parts[0], parts[1], parts[2]);
 
         if (!Boolean.parseBoolean(parts[3])) {
             book.borrow();
         }
-
         return book;
     }
 }
