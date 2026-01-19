@@ -76,7 +76,7 @@ public class LibraryFileRepository {
     }
 
     private Book deserialize(String line) {
-        String[] parts = line.split(",");
+        String[] parts = line.split(",", -1);
         Book book = new Book(parts[0], parts[1], parts[2]);
 
         if (!Boolean.parseBoolean(parts[3])) {
